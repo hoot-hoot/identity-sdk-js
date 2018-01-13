@@ -1,8 +1,8 @@
 {
-    "name": "@hoot-hoot/identity-sdk-js",
-    "version": "0.0.0",
+    "name": "@truesparrow/identity-sdk-js",
+    "version": "0.0.1",
     "description": "The SDK for the identity serivce",
-    "author": "Hoot-Hoot team",
+    "author": "CHM SQRT2 Team",
     "scripts": {
         "build": "tsc",
         "test-dev": "tsc --watch & mocha --watch $(find out -name '*-test.js')",
@@ -19,9 +19,9 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/hoot-hoot/identity-sdk-js.git"
+        "url": "git+https://github.com/truesparrow/identity-sdk-js.git"
     },
-    "homepage": "https://github.com/hoot-hoot/identity-sdk-js#readme",
+    "homepage": "https://github.com/truesparrow/identity-sdk-js#readme",
     "license": "MIT",
     "main": "./index.js",
     "types": "./index.d.ts",
@@ -32,8 +32,8 @@
         "tsconfig.json": "f:tsconfig.json"
     },
     "dependencies": {
-        "@hoot-hoot/common-js": "=0.0.0",
-        "@hoot-hoot/common-server-js": "=0.0.0",
+        "@truesparrow/common-js": "=0.0.1",
+        "@truesparrow/common-server-js": "=0.0.1",
         "cookie-parser": "=1.4.3",
         "express": "=4.16.2",
         "history": "=4.7.2",
@@ -45,7 +45,7 @@
         "uuid": "=3.1.0"
     },
     "devDependencies": {
-        "@hoot-hoot/togemfury": "=0.0.0",
+        "@truesparrow/togemfury": "=0.0.3",
         "@types/chai": "=4.0.8",
         "@types/cookie-parser": "=1.4.1",
         "@types/express": "=4.0.39",

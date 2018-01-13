@@ -7,7 +7,7 @@ import * as HttpStatus from 'http-status-codes'
 import * as moment from 'moment'
 import { MarshalFrom } from 'raynor'
 
-import { Env, isLocal } from '@hoot-hoot/common-js'
+import { Env, isLocal } from '@truesparrow/common-js'
 
 import { SessionToken } from '../session-token'
 import { IdentityClient, SESSION_TOKEN_COOKIE_NAME, SESSION_TOKEN_HEADER_NAME } from '../client'

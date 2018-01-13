@@ -8,7 +8,7 @@ import * as express from 'express'
 import * as HttpStatus from 'http-status-codes'
 import { MarshalFrom } from 'raynor'
 
-import { WebFetcher, Request } from '@hoot-hoot/common-server-js'
+import { WebFetcher, Request } from '@truesparrow/common-server-js'
 
 import {
     SESSION_TOKEN_COOKIE_NAME,

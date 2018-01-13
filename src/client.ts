@@ -4,8 +4,8 @@
 import * as HttpStatus from 'http-status-codes'
 import { Marshaller, MarshalFrom } from 'raynor'
 
-import { Env, isLocal } from '@hoot-hoot/common-js'
-import { WebFetcher } from '@hoot-hoot/common-server-js'
+import { Env, isLocal } from '@truesparrow/common-js'
+import { WebFetcher } from '@truesparrow/common-server-js'
 
 import { SessionToken } from './session-token'
 import { PublicUser, Session } from './entities'
@@ -17,11 +17,11 @@ import {
 
 
 /** The name of the cookie which contains the session token for browser->server communication. */
-export const SESSION_TOKEN_COOKIE_NAME: string = 'hoot-hoot-sessiontoken';
+export const SESSION_TOKEN_COOKIE_NAME: string = 'truesparrow-sessiontoken';
 /** The name of the header which contains the session token for server->server communication. */
-export const SESSION_TOKEN_HEADER_NAME: string = 'X-Hoot-Hoot-SessionToken';
+export const SESSION_TOKEN_HEADER_NAME: string = 'X-TrueSparrow-SessionToken';
 /** The name of the header which contains the XSRF token. */
-export const XSRF_TOKEN_HEADER_NAME: string = 'X-Hoot-Hoot-XsrfToken';
+export const XSRF_TOKEN_HEADER_NAME: string = 'X-TrueSparrow-XsrfToken';
 
 
 /** The base error raised by methods of the {@link IdentityClient}. */

@@ -4,7 +4,7 @@
 import * as r from 'raynor'
 import { ExtractError, OptionalOf, MarshalEnum, MarshalFrom, MarshalWith, TryInOrder } from 'raynor'
 
-import { LanguageMarshaller } from '@hoot-hoot/common-js'
+import { LanguageMarshaller } from '@truesparrow/common-js'
 
 
 /** A marshaller for the XSRF tokens we use. They're basically 64 random characters. */
