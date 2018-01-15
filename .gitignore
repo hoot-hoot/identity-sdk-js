@@ -10,6 +10,3 @@
 
 # Anything containing .DS_Store
 .DS_Store
-
-# Secrets files
-secrets.json
