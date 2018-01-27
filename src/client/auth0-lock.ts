@@ -1,7 +1,6 @@
 /** Utilities for the UI parts of Auth0. */
 
 /** Imports. Also so typedoc works correctly. */
-import { History } from 'history'
 import { Marshaller } from 'raynor'
 import 'require-ensure'
 
@@ -15,18 +14,15 @@ import { Auth0Config } from '../auth0'
  */
 export class Auth0Lock {
     private readonly _postLoginRedirectInfoMarshaller: Marshaller<PostLoginRedirectInfo>;
-    private readonly _history: History;
     private readonly _auth0Config: Auth0Config;
 
     /**
      * Construct a {@link Auth0Lock}.
      * @param allowedPaths - a list of path prefixes which are permitted.
-     * @param history - a {@link History} object for accessing the current location.
      * @param auth0Config - the configuration for Auth0.
      */
-    constructor(history: History, allowedPaths: PathMatch[], auth0Config: Auth0Config) {
+    constructor(allowedPaths: PathMatch[], auth0Config: Auth0Config) {
         this._postLoginRedirectInfoMarshaller = new (PostLoginRedirectInfoMarshaller(allowedPaths))();
-        this._history = history;
         this._auth0Config = auth0Config;
     }
 
@@ -37,17 +33,17 @@ export class Auth0Lock {
      * [Auth0 Lock]{@link https://auth0.com/lock} library and dependencies. The reason this is so
      * is that the library itself is _very_ big, but it is only useful rarely (when somebody logs in
      * or tries to signup).
+     * @param redirectLocation - the location the lock will redirect to after a successful login.
      * @param canDismiss - whether the UI component can be dismissed or not.
      */
-    showLock(canDismiss: boolean = true): void {
+    showLock(redirectLocation: Location, canDismiss: boolean = true): void {
         var _this = this;
 
         // This generates an async chunk.
         (require as any).ensure([], function(asyncRequire: (moduleName: string) => any) {
             const auth0Lock = asyncRequire('auth0-lock');
 
-            const currentLocation = _this._history.location;
-            const postLoginInfo = new PostLoginRedirectInfo(currentLocation.pathname);
+            const postLoginInfo = new PostLoginRedirectInfo(redirectLocation.pathname);
             const postLoginInfoSer = _this._postLoginRedirectInfoMarshaller.pack(postLoginInfo);
 
             const auth0: any = new ((auth0Lock as any).default)(
