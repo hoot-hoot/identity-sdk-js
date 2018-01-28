@@ -316,7 +316,7 @@ describe('Auth0AuthFlowRouter', () => {
                 td.when(identityClient.getOrCreateUserOnSession(theSession)).thenReturn([theSessionTokenWithUser, theSessionWithUser]);
 
                 await appAgent
-                    .post('/login?code=some_code&state=' + postLoginRedirectInfoMarshaller.pack(new PostLoginRedirectInfo('/admin')))
+                    .get('/login?code=some_code&state=' + postLoginRedirectInfoMarshaller.pack(new PostLoginRedirectInfo('/admin')))
                     .set('Cookie', `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionToken)))}`)
                     .expect(HttpStatus.MOVED_TEMPORARILY)
                     .then(response => {
@@ -365,7 +365,7 @@ describe('Auth0AuthFlowRouter', () => {
                 td.when(identityClient.getOrCreateUserOnSession(theSessionWithUser)).thenReturn([theSessionTokenWithUser, theSessionWithUser]);
 
                 await appAgent
-                    .post('/login?code=some_code&state=' + postLoginRedirectInfoMarshaller.pack(new PostLoginRedirectInfo('/admin')))
+                    .get('/login?code=some_code&state=' + postLoginRedirectInfoMarshaller.pack(new PostLoginRedirectInfo('/admin')))
                     .set('Cookie', `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionTokenWithUser)))}`)
                     .expect(HttpStatus.MOVED_TEMPORARILY)
                     .then(response => {
@@ -414,7 +414,7 @@ describe('Auth0AuthFlowRouter', () => {
                 td.when(identityClient.getOrCreateUserOnSession(theSessionWithUser)).thenReturn([theOtherSessionTokenWithUser, theSessionWithUser]);
 
                 await appAgent
-                    .post('/login?code=some_code&state=' + postLoginRedirectInfoMarshaller.pack(new PostLoginRedirectInfo('/admin')))
+                    .get('/login?code=some_code&state=' + postLoginRedirectInfoMarshaller.pack(new PostLoginRedirectInfo('/admin')))
                     .set('Cookie', `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionTokenWithUser)))}`)
                     .expect(HttpStatus.MOVED_TEMPORARILY)
                     .then(response => {
@@ -441,7 +441,7 @@ describe('Auth0AuthFlowRouter', () => {
                     const appAgent = buildAppAgent(env, webFetcher as WebFetcher, identityClient as IdentityClient);
 
                     await appAgent
-                        .post('/login?code=some_code&state=' + postLoginRedirectInfoMarshaller.pack(new PostLoginRedirectInfo('/admin')))
+                        .get('/login?code=some_code&state=' + postLoginRedirectInfoMarshaller.pack(new PostLoginRedirectInfo('/admin')))
                         .set('Cookie', cookieData)
                         .expect(HttpStatus.BAD_REQUEST)
                         .then(response => {
@@ -463,7 +463,7 @@ describe('Auth0AuthFlowRouter', () => {
                     td.when(identityClient.getSession()).thenReject(error as Error);
 
                     await appAgent
-                        .post('/login?code=some_code&state=' + postLoginRedirectInfoMarshaller.pack(new PostLoginRedirectInfo('/admin')))
+                        .get('/login?code=some_code&state=' + postLoginRedirectInfoMarshaller.pack(new PostLoginRedirectInfo('/admin')))
                         .set('Cookie', `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionToken)))}`)
                         .expect(statusCode)
                         .then(response => {
@@ -487,7 +487,7 @@ describe('Auth0AuthFlowRouter', () => {
                     td.when(identityClient.withContext(theSessionToken)).thenReturn(identityClient);
                     td.when(identityClient.getSession()).thenResolve(theSession);
 
-                    await appAgent.post('/login' + params)
+                    await appAgent.get('/login' + params)
                         .set('Cookie', `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionToken)))}`)
                         .expect(HttpStatus.BAD_REQUEST)
                         .then(response => {
@@ -519,7 +519,7 @@ describe('Auth0AuthFlowRouter', () => {
                 td.when(identityClient.getSession()).thenResolve(theSession);
 
                 await appAgent
-                    .post('/login?code=some_code&state=' + postLoginRedirectInfoMarshaller.pack(new PostLoginRedirectInfo('/admin')))
+                    .get('/login?code=some_code&state=' + postLoginRedirectInfoMarshaller.pack(new PostLoginRedirectInfo('/admin')))
                     .set('Cookie', `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionToken)))}`)
                     .expect(HttpStatus.BAD_GATEWAY)
                     .then(response => {
@@ -555,7 +555,7 @@ describe('Auth0AuthFlowRouter', () => {
                 td.when(identityClient.getSession()).thenResolve(theSession);
 
                 await appAgent
-                    .post('/login?code=some_code&state=' + postLoginRedirectInfoMarshaller.pack(new PostLoginRedirectInfo('/admin')))
+                    .get('/login?code=some_code&state=' + postLoginRedirectInfoMarshaller.pack(new PostLoginRedirectInfo('/admin')))
                     .set('Cookie', `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionToken)))}`)
                     .expect(HttpStatus.BAD_GATEWAY)
                     .then(response => {
@@ -592,7 +592,7 @@ describe('Auth0AuthFlowRouter', () => {
                 td.when(identityClient.getSession()).thenResolve(theSession);
 
                 await appAgent
-                    .post('/login?code=some_code&state=' + postLoginRedirectInfoMarshaller.pack(new PostLoginRedirectInfo('/admin')))
+                    .get('/login?code=some_code&state=' + postLoginRedirectInfoMarshaller.pack(new PostLoginRedirectInfo('/admin')))
                     .set('Cookie', `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionToken)))}`)
                     .expect(HttpStatus.INTERNAL_SERVER_ERROR)
                     .then(response => {
@@ -636,7 +636,7 @@ describe('Auth0AuthFlowRouter', () => {
                     td.when(identityClient.getOrCreateUserOnSession(theSession)).thenReject(error as Error);
 
                     await appAgent
-                        .post('/login?code=some_code&state=' + postLoginRedirectInfoMarshaller.pack(new PostLoginRedirectInfo('/admin')))
+                        .get('/login?code=some_code&state=' + postLoginRedirectInfoMarshaller.pack(new PostLoginRedirectInfo('/admin')))
                         .set('Cookie', `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionToken)))}`)
                         .expect(statusCode)
                         .then(response => {
@@ -665,7 +665,7 @@ describe('Auth0AuthFlowRouter', () => {
                 td.when(identityClient.getUserOnSession()).thenResolve(theSessionWithUser);
 
                 await appAgent
-                    .post('/logout')
+                    .get('/logout')
                     .set('Cookie', `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionTokenWithUser)))}`)
                     .expect(HttpStatus.MOVED_TEMPORARILY)
                     .then(response => {
@@ -695,7 +695,7 @@ describe('Auth0AuthFlowRouter', () => {
                     const appAgent = buildAppAgent(env, webFetcher as WebFetcher, identityClient as IdentityClient);
 
                     await appAgent
-                        .post('/logout')
+                        .get('/logout')
                         .set('Cookie', cookieData)
                         .expect(HttpStatus.BAD_REQUEST)
                         .then(response => {
@@ -717,7 +717,7 @@ describe('Auth0AuthFlowRouter', () => {
                     td.when(identityClient.getUserOnSession()).thenReject(error as Error);
 
                     await appAgent
-                        .post('/logout')
+                        .get('/logout')
                         .set('Cookie', `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionTokenWithUser)))}`)
                         .expect(statusCode)
                         .then(response => {
@@ -740,7 +740,7 @@ describe('Auth0AuthFlowRouter', () => {
                     td.when(identityClient.removeSession(theSessionWithUser)).thenThrow(error as Error);
 
                     await appAgent
-                        .post('/logout')
+                        .get('/logout')
                         .set('Cookie', `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionTokenWithUser)))}`)
                         .expect(statusCode)
                         .then(response => {

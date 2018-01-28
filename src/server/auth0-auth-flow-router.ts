@@ -141,7 +141,7 @@ export function newAuth0AuthFlowRouter(
 
     const router = express.Router();
 
-    router.post('/login', [newSessionMiddleware(SessionLevel.Session, SessionInfoSource.Cookie, env, identityClient)], wrap(async (req: RequestWithIdentity, res: express.Response) => {
+    router.get('/login', [newSessionMiddleware(SessionLevel.Session, SessionInfoSource.Cookie, env, identityClient)], wrap(async (req: RequestWithIdentity, res: express.Response) => {
         let redirectInfo: Auth0AuthorizeRedirectInfo | null = null;
         try {
             redirectInfo = auth0AuthorizeRedirectInfoMarshaller.extract(req.query);
@@ -224,7 +224,7 @@ export function newAuth0AuthFlowRouter(
         res.redirect(redirectInfo.state.path);
     }));
 
-    router.post('/logout', [newSessionMiddleware(SessionLevel.SessionAndUser, SessionInfoSource.Cookie, env, identityClient)], wrap(async (req: RequestWithIdentity, res: express.Response) => {
+    router.get('/logout', [newSessionMiddleware(SessionLevel.SessionAndUser, SessionInfoSource.Cookie, env, identityClient)], wrap(async (req: RequestWithIdentity, res: express.Response) => {
         try {
             await identityClient.withContext(req.sessionToken as SessionToken).removeSession(req.session);
         } catch (e) {
