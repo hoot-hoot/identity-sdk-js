@@ -10,7 +10,7 @@ import { ExtractError, MarshalFrom, MarshalWith, StringMarshaller } from 'raynor
 import { Env } from '@truesparrow/common-js'
 import { WebFetcher } from '@truesparrow/common-server-js'
 
-import { Auth0Config } from '../auth0'
+import { Auth0ServerConfig } from '../auth0'
 import { PathMatch, PostLoginRedirectInfo, PostLoginRedirectInfoMarshaller } from '../auth-flow'
 import { IdentityClient } from '../client'
 import { RequestWithIdentity } from '../request'
@@ -124,7 +124,7 @@ const AUTHORIZE_OPTIONS = {
  * @note The router assumes the common middleware is used.
  * @param env - the environment in which the code is running.
  * @param allowedPaths - a set of allowed path prefixes.
- * @param auth0Config - the configuration for Auth0.
+ * @param auth0ServerConfig - the configuration for Auth0.
  * @param webFetcher - a fetcher object.
  * @param identityClient - a client for the identity service.
  * @return An express router instance which implement the auth flow for the identity service via
@@ -133,7 +133,7 @@ const AUTHORIZE_OPTIONS = {
 export function newAuth0AuthFlowRouter(
     env: Env,
     allowedPaths: PathMatch[],
-    auth0Config: Auth0Config,
+    auth0ServerConfig: Auth0ServerConfig,
     webFetcher: WebFetcher,
     identityClient: IdentityClient): express.Router {
     const auth0TokenExchangeResultMarshaller = new (MarshalFrom(Auth0TokenExchangeResult))();
@@ -156,16 +156,16 @@ export function newAuth0AuthFlowRouter(
         const options = (Object as any).assign({}, AUTHORIZE_OPTIONS, {
             body: JSON.stringify({
                 grant_type: 'authorization_code',
-                client_id: auth0Config.clientId,
-                client_secret: auth0Config.clientSecret,
+                client_id: auth0ServerConfig.clientId,
+                client_secret: auth0ServerConfig.clientSecret,
                 code: redirectInfo.authorizationCode,
-                redirect_uri: auth0Config.loginCallbackUri
+                redirect_uri: auth0ServerConfig.loginCallbackUri
             })
         });
 
         let rawResponse: Response;
         try {
-            rawResponse = await webFetcher.fetch(`https://${auth0Config.domain}/oauth/token`, options);
+            rawResponse = await webFetcher.fetch(`https://${auth0ServerConfig.domain}/oauth/token`, options);
         } catch (e) {
             req.log.error(e);
             req.errorLog.error(e);

@@ -1,5 +1,7 @@
 export {
-    Auth0Config
+    Auth0ClientConfig,
+    Auth0ServerConfig,
+    serverToClient
 } from './auth0'
 
 export {

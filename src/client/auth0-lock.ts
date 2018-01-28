@@ -5,7 +5,7 @@ import { Marshaller } from 'raynor'
 import 'require-ensure'
 
 import { PathMatch, PostLoginRedirectInfo, PostLoginRedirectInfoMarshaller } from '../auth-flow'
-import { Auth0Config } from '../auth0'
+import { Auth0ClientConfig } from '../auth0'
 
 
 /**
@@ -14,16 +14,16 @@ import { Auth0Config } from '../auth0'
  */
 export class Auth0Lock {
     private readonly _postLoginRedirectInfoMarshaller: Marshaller<PostLoginRedirectInfo>;
-    private readonly _auth0Config: Auth0Config;
+    private readonly _auth0ClientConfig: Auth0ClientConfig;
 
     /**
      * Construct a {@link Auth0Lock}.
      * @param allowedPaths - a list of path prefixes which are permitted.
-     * @param auth0Config - the configuration for Auth0.
+     * @param auth0ClientConfig - the client configuration for Auth0.
      */
-    constructor(allowedPaths: PathMatch[], auth0Config: Auth0Config) {
+    constructor(allowedPaths: PathMatch[], auth0ClientConfig: Auth0ClientConfig) {
         this._postLoginRedirectInfoMarshaller = new (PostLoginRedirectInfoMarshaller(allowedPaths))();
-        this._auth0Config = auth0Config;
+        this._auth0ClientConfig = auth0ClientConfig;
     }
 
     /**
@@ -47,12 +47,12 @@ export class Auth0Lock {
             const postLoginInfoSer = _this._postLoginRedirectInfoMarshaller.pack(postLoginInfo);
 
             const auth0: any = new ((auth0Lock as any).default)(
-                _this._auth0Config.clientId,
-                _this._auth0Config.domain, {
+                _this._auth0ClientConfig.clientId,
+                _this._auth0ClientConfig.domain, {
                     closable: canDismiss,
                     auth: {
                         redirect: true,
-                        redirectUrl: _this._auth0Config.loginCallbackUri,
+                        redirectUrl: _this._auth0ClientConfig.loginCallbackUri,
                         responseType: 'code',
                         params: {
                             state: postLoginInfoSer

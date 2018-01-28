@@ -24,6 +24,9 @@ import {
     PostLoginRedirectInfoMarshaller
 } from '../auth-flow'
 import {
+    Auth0ServerConfig
+} from '../auth0'
+import {
     IdentityClient,
     IdentityError,
     SESSION_TOKEN_COOKIE_NAME,
@@ -159,7 +162,6 @@ describe('Auth0AuthorizeRedirectInfo', () => {
             { path: '/admin', mode: 'full' },
             { path: '/admin/', mode: 'prefix' }
         ];
-
         const auth0AuthorizeRedirectInfos = [
             [{ code: 'abcabc', state: quickEncode({ path: '/' }) }, new Auth0AuthorizeRedirectInfo('abcabc', new PostLoginRedirectInfo('/'))],
             [{ code: 'abcabc', state: quickEncode({ path: '/admin' }) }, new Auth0AuthorizeRedirectInfo('abcabc', new PostLoginRedirectInfo('/admin'))],
@@ -225,7 +227,7 @@ describe('Auth0AuthFlowRouter', () => {
         { path: '/admin/', mode: 'prefix' }
     ];
 
-    const auth0Config = {
+    const auth0ServerConfig: Auth0ServerConfig = {
         clientId: 'foo',
         clientSecret: 'bar',
         domain: 'some-domain',
@@ -750,7 +752,7 @@ describe('Auth0AuthFlowRouter', () => {
     });
 
     function buildAppAgent(env: Env, webFetcher: WebFetcher, identityClient: IdentityClient) {
-        const router = newAuth0AuthFlowRouter(env, allowedPaths, auth0Config, webFetcher, identityClient);
+        const router = newAuth0AuthFlowRouter(env, allowedPaths, auth0ServerConfig, webFetcher, identityClient);
         const app = express();
         app.use(newLocalCommonServerMiddleware('test', Env.Local, true));
         app.use(router);
