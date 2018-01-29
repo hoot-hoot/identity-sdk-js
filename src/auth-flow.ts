@@ -33,7 +33,8 @@ export class PostLoginRedirectInfo {
  * or the full path.
  */
 export class PathMatch {
-    @MarshalWith(r.PathAndQueryAndFragmentMarshaller)
+    // TODO: better marshalling here.
+    @MarshalWith(r.StringMarshaller)
     path: string;
 
     @MarshalWith(r.StringMarshaller)
