@@ -32,9 +32,12 @@ export class PostLoginRedirectInfo {
  * The way we're supposed to look at an allowed path. Either match the prefix
  * or the full path.
  */
-export type PathMatch = {
-    path: string,
-    mode: 'prefix'|'full'
+export class PathMatch {
+    @MarshalWith(r.PathAndQueryAndFragmentMarshaller)
+    path: string;
+
+    @MarshalWith(r.StringMarshaller)
+    mode: 'prefix'|'full';
 };
 
 
