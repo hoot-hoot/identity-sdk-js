@@ -258,7 +258,7 @@ class IdentityClientImpl implements IdentityClient {
 
         let rawResponse: Response;
         try {
-            rawResponse = await this._webFetcher.fetch(`${this._protocol}://${this._identityServiceHost}/session`, options);
+            rawResponse = await this._webFetcher.fetch(`${this._protocol}://${this._identityServiceHost}/api/sessions`, options);
         } catch (e) {
             throw new IdentityError(`Request failed because '${e.toString()}'`);
         }
@@ -281,7 +281,7 @@ class IdentityClientImpl implements IdentityClient {
 
         let rawResponse: Response;
         try {
-            rawResponse = await this._webFetcher.fetch(`${this._protocol}://${this._identityServiceHost}/session`, options);
+            rawResponse = await this._webFetcher.fetch(`${this._protocol}://${this._identityServiceHost}/api/sessions`, options);
         } catch (e) {
             throw new IdentityError(`Request failed because '${e.toString()}'`);
         }
@@ -306,7 +306,7 @@ class IdentityClientImpl implements IdentityClient {
 
         let rawResponse: Response;
         try {
-            rawResponse = await this._webFetcher.fetch(`${this._protocol}://${this._identityServiceHost}/session`, options);
+            rawResponse = await this._webFetcher.fetch(`${this._protocol}://${this._identityServiceHost}/api/sessions`, options);
         } catch (e) {
             throw new IdentityError(`Request failed because '${e.toString()}'`);
         }
@@ -325,7 +325,7 @@ class IdentityClientImpl implements IdentityClient {
 
         let rawResponse: Response;
         try {
-            rawResponse = await this._webFetcher.fetch(`${this._protocol}://${this._identityServiceHost}/session/agree-to-cookie-policy`, options);
+            rawResponse = await this._webFetcher.fetch(`${this._protocol}://${this._identityServiceHost}/api/sessions/agree-to-cookie-policy`, options);
         } catch (e) {
             throw new IdentityError(`Request failed because '${e.toString()}'`);
         }
@@ -350,7 +350,7 @@ class IdentityClientImpl implements IdentityClient {
 
         let rawResponse: Response;
         try {
-            rawResponse = await this._webFetcher.fetch(`${this._protocol}://${this._identityServiceHost}/user`, options);
+            rawResponse = await this._webFetcher.fetch(`${this._protocol}://${this._identityServiceHost}/api/users`, options);
         } catch (e) {
             throw new IdentityError(`Request failed because '${e.toString()}'`);
         }
@@ -375,7 +375,7 @@ class IdentityClientImpl implements IdentityClient {
 
         let rawResponse: Response;
         try {
-            rawResponse = await this._webFetcher.fetch(`${this._protocol}://${this._identityServiceHost}/user`, options);
+            rawResponse = await this._webFetcher.fetch(`${this._protocol}://${this._identityServiceHost}/api/users`, options);
         } catch (e) {
             throw new IdentityError(`Request failed because '${e.toString()}'`);
         }
@@ -408,7 +408,7 @@ class IdentityClientImpl implements IdentityClient {
         let rawResponse: Response;
         try {
             const encodedIds = encodeURIComponent(JSON.stringify(dedupedIds));
-            rawResponse = await this._webFetcher.fetch(`${this._protocol}://${this._identityServiceHost}/users-info?ids=${encodedIds}`, options);
+            rawResponse = await this._webFetcher.fetch(`${this._protocol}://${this._identityServiceHost}/api/users-info?ids=${encodedIds}`, options);
         } catch (e) {
             throw new IdentityError(`Request failed because '${e.toString()}'`);
         }

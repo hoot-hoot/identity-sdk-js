@@ -155,7 +155,7 @@ describe('IdentityClient', () => {
             sessionAndTokenResponse.sessionToken = theSessionToken;
             sessionAndTokenResponse.session = theSession;
 
-            td.when(fetcher.fetch('http://identity/session', {
+            td.when(fetcher.fetch('http://identity/api/sessions', {
                 method: 'POST',
                 cache: 'no-cache',
 
@@ -180,7 +180,7 @@ describe('IdentityClient', () => {
             sessionAndTokenResponse.sessionToken = theSessionToken;
             sessionAndTokenResponse.session = theSession;
 
-            td.when(fetcher.fetch('http://identity/session', {
+            td.when(fetcher.fetch('http://identity/api/sessions', {
                 method: 'POST',
                 cache: 'no-cache',
                 redirect: 'error',
@@ -209,7 +209,7 @@ describe('IdentityClient', () => {
             const sessionResponse = new SessionResponse();
             sessionResponse.session = theSession;
 
-            td.when(fetcher.fetch('http://identity/session', {
+            td.when(fetcher.fetch('http://identity/api/sessions', {
                 method: 'GET',
                 cache: 'no-cache',
                 redirect: 'error',
@@ -235,7 +235,7 @@ describe('IdentityClient', () => {
         it('should remove session', async () => {
             const client = newIdentityClient(Env.Local, 'core', 'identity', fetcher as WebFetcher).withContext(theSessionToken);
 
-            td.when(fetcher.fetch('http://identity/session', {
+            td.when(fetcher.fetch('http://identity/api/sessions', {
                 method: 'DELETE',
                 cache: 'no-cache',
                 redirect: 'error',
@@ -263,7 +263,7 @@ describe('IdentityClient', () => {
             const sessionResponse = new SessionResponse();
             sessionResponse.session = theSessionWithAgreement;
 
-            td.when(fetcher.fetch('http://identity/session/agree-to-cookie-policy', {
+            td.when(fetcher.fetch('http://identity/api/sessions/agree-to-cookie-policy', {
                 method: 'POST',
                 cache: 'no-cache',
                 redirect: 'error',
@@ -294,7 +294,7 @@ describe('IdentityClient', () => {
             sessionAndTokenResponse.sessionToken = theSessionTokenWithUser;
             sessionAndTokenResponse.session = theSessionWithUser;
 
-            td.when(fetcher.fetch('http://identity/user', {
+            td.when(fetcher.fetch('http://identity/api/users', {
                 method: 'POST',
                 cache: 'no-cache',
                 redirect: 'error',
@@ -325,7 +325,7 @@ describe('IdentityClient', () => {
             const sessionResponse = new SessionResponse();
             sessionResponse.session = theSessionWithUser;
 
-            td.when(fetcher.fetch('http://identity/user', {
+            td.when(fetcher.fetch('http://identity/api/users', {
                 method: 'GET',
                 cache: 'no-cache',
                 redirect: 'error',
@@ -354,7 +354,7 @@ describe('IdentityClient', () => {
             const usersInfoResponse = new UsersInfoResponse();
             usersInfoResponse.usersInfo = [userInfoJohnDoe, userInfoJaneDoe];
 
-            td.when(fetcher.fetch('http://identity/users-info?ids=%5B1%2C2%5D', {
+            td.when(fetcher.fetch('http://identity/api/users-info?ids=%5B1%2C2%5D', {
                 method: 'GET',
                 cache: 'no-cache',
                 redirect: 'error',
@@ -377,7 +377,7 @@ describe('IdentityClient', () => {
             const usersInfoResponse = new UsersInfoResponse();
             usersInfoResponse.usersInfo = [userInfoJohnDoe, userInfoJaneDoe];
 
-            td.when(fetcher.fetch('http://identity/users-info?ids=%5B1%2C2%5D', {
+            td.when(fetcher.fetch('http://identity/api/users-info?ids=%5B1%2C2%5D', {
                 method: 'GET',
                 cache: 'no-cache',
                 redirect: 'error',
