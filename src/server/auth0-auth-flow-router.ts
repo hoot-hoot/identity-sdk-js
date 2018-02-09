@@ -7,8 +7,7 @@ import * as HttpStatus from 'http-status-codes'
 import * as r from 'raynor'
 import { ExtractError, MarshalFrom, MarshalWith, StringMarshaller } from 'raynor'
 
-import { Env } from '@truesparrow/common-js'
-import { WebFetcher } from '@truesparrow/common-server-js'
+import { Env, WebFetcher } from '@truesparrow/common-js'
 
 import { Auth0ServerConfig } from '../auth0'
 import { PathMatch, PostLoginRedirectInfo, PostLoginRedirectInfoMarshaller } from '../auth-flow'

@@ -5,8 +5,7 @@ import { MarshalFrom } from 'raynor'
 import * as td from 'testdouble'
 import * as uuid from 'uuid'
 
-import { Env } from '@truesparrow/common-js'
-import { WebFetcher } from '@truesparrow/common-server-js'
+import { Env, WebFetcher } from '@truesparrow/common-js'
 
 import {
     IdentityClient,

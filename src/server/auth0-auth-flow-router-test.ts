@@ -8,8 +8,8 @@ import * as td from 'testdouble'
 import { agent } from 'supertest'
 import * as uuid from 'uuid'
 
-import { Env, isLocal } from '@truesparrow/common-js'
-import { WebFetcher, newLocalCommonServerMiddleware } from '@truesparrow/common-server-js'
+import { Env, isLocal, WebFetcher } from '@truesparrow/common-js'
+import { newLocalCommonServerMiddleware } from '@truesparrow/common-server-js'
 
 import {
     Auth0AuthorizeRedirectInfo,
