@@ -106,6 +106,7 @@ describe('SessionMiddleware', () => {
                     sessionToken: null,
                     session: null,
                     headers: {},
+                    header: (_header: string) => { },
                 });
 
                 td.when(identityClient.getOrCreateSession()).thenResolve([theSessionToken, theSession]);
@@ -140,11 +141,12 @@ describe('SessionMiddleware', () => {
                         sessionToken: null,
                         session: null,
                         headers: {
-                            cookie: `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionToken)))}`,
-                            [SESSION_TOKEN_HEADER_NAME]: JSON.stringify(theSessionToken)
-                        }
+                            cookie: `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionToken)))}`
+                        },
+                        header: (_header: string) => { }
                     });
 
+                    td.when(mockReq.header(SESSION_TOKEN_HEADER_NAME)).thenReturn(JSON.stringify(theSessionToken));
                     td.when(identityClient.withContext(theSessionToken)).thenReturn(identityClient);
                     td.when(identityClient.getSession()).thenResolve(theSession);
 
@@ -179,11 +181,12 @@ describe('SessionMiddleware', () => {
                         sessionToken: null,
                         session: null,
                         headers: {
-                            cookie: `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionTokenWithUser)))}`,
-                            [SESSION_TOKEN_HEADER_NAME]: JSON.stringify(theSessionTokenWithUser)
-                        }
+                            cookie: `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionTokenWithUser)))}`
+                        },
+                        header: (_header: string) => { }
                     });
 
+                    td.when(mockReq.header(SESSION_TOKEN_HEADER_NAME)).thenReturn(JSON.stringify(theSessionTokenWithUser));
                     td.when(identityClient.withContext(theSessionTokenWithUser)).thenReturn(identityClient);
                     td.when(identityClient.getUserOnSession()).thenResolve(theSessionWithUser);
 
@@ -217,6 +220,7 @@ describe('SessionMiddleware', () => {
                     const mockReq = td.object({
                         requestTime: rightNow,
                         headers: {},
+                        header: (_header: string) => { },
                         log: { warn: (_msg: string) => { } }
                     });
 
@@ -240,6 +244,7 @@ describe('SessionMiddleware', () => {
                 const mockReq = td.object({
                     requestTime: rightNow,
                     headers: {},
+                    header: (_header: string) => { },
                     log: { error: (_msg: Error) => { } }
                 });
 
@@ -275,14 +280,15 @@ describe('SessionMiddleware', () => {
                 const mockReq = td.object({
                     requestTime: rightNow,
                     headers: {
-                        cookie: `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionToken)))}`,
-                        [SESSION_TOKEN_HEADER_NAME]: JSON.stringify(theSessionToken)
+                        cookie: `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionToken)))}`
                     },
+                    header: (_header: string) => { },
                     log: { warn: (_msg: string) => { } }
                 });
 
                 let called = false;
 
+                td.when(mockReq.header(SESSION_TOKEN_HEADER_NAME)).thenReturn(JSON.stringify(theSessionToken));
                 sessionMiddleware(mockReq as any, mockRes as any, () => { called = true; });
 
                 setTimeout(() => {
@@ -305,6 +311,7 @@ describe('SessionMiddleware', () => {
                 const mockReq = td.object({
                     requestTime: rightNow,
                     headers: {},
+                    header: (_header: string) => { },
                     log: { error: (_msg: Error) => { } }
                 });
 
@@ -342,11 +349,13 @@ describe('SessionMiddleware', () => {
                     const mockReq = td.object({
                         requestTime: rightNow,
                         headers: {
-                            cookie: `${SESSION_TOKEN_COOKIE_NAME}="bad-stuff"`,
-                            [SESSION_TOKEN_HEADER_NAME]: 'bad-stuff'
+                            cookie: `${SESSION_TOKEN_COOKIE_NAME}="bad-stuff"`
                         },
+                        header: (_header: string) => { },
                         log: { error: (_msg: Error) => { } }
                     });
+
+                    td.when(mockReq.header(SESSION_TOKEN_HEADER_NAME)).thenReturn('bad-stuff');
 
                     sessionMiddleware(mockReq as any, mockRes as any, () => { called = true; });
 
@@ -366,11 +375,13 @@ describe('SessionMiddleware', () => {
                     const mockReq = td.object({
                         requestTime: rightNow,
                         headers: {
-                            cookie: `${SESSION_TOKEN_COOKIE_NAME}=${JSON.stringify({ foo: 'bar' })}`,
-                            [SESSION_TOKEN_HEADER_NAME]: '{"foo": "bar"}'
+                            cookie: `${SESSION_TOKEN_COOKIE_NAME}=${JSON.stringify({ foo: 'bar' })}`
                         },
+                        header: (_header: string) => { },
                         log: { error: (_msg: Error) => { } }
                     });
+
+                    td.when(mockReq.header(SESSION_TOKEN_HEADER_NAME)).thenReturn('{"foo": "bar"}');
 
                     sessionMiddleware(mockReq as any, mockRes as any, () => { called = true; });
 
@@ -396,14 +407,15 @@ describe('SessionMiddleware', () => {
                     const mockReq = td.object({
                         requestTime: rightNow,
                         headers: {
-                            cookie: `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionToken)))}`,
-                            [SESSION_TOKEN_HEADER_NAME]: JSON.stringify(theSessionToken)
+                            cookie: `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionToken)))}`
                         },
+                        header: (_header: string) => { },
                         log: { error: (_msg: Error) => { } }
                     });
 
                     const error = new UnauthorizedIdentityError('Bad');
 
+                    td.when(mockReq.header(SESSION_TOKEN_HEADER_NAME)).thenReturn(JSON.stringify(theSessionToken));
                     td.when(identityClient.withContext(theSessionToken)).thenReturn(identityClient);
                     td.when(identityClient.getSession()).thenReject(error);
 
@@ -435,14 +447,15 @@ describe('SessionMiddleware', () => {
                     const mockReq = td.object({
                         requestTime: rightNow,
                         headers: {
-                            cookie: `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionToken)))}`,
-                            [SESSION_TOKEN_HEADER_NAME]: JSON.stringify(theSessionToken)
+                            cookie: `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionToken)))}`
                         },
+                        header: (_header: string) => { },
                         log: { error: (_msg: Error) => { } }
                     });
 
                     const error = new IdentityError('Bad');
 
+                    td.when(mockReq.header(SESSION_TOKEN_HEADER_NAME)).thenReturn(JSON.stringify(theSessionToken));
                     td.when(identityClient.withContext(theSessionToken)).thenReturn(identityClient);
                     td.when(identityClient.getSession()).thenReject(error);
 
@@ -474,14 +487,15 @@ describe('SessionMiddleware', () => {
                     const mockReq = td.object({
                         requestTime: rightNow,
                         headers: {
-                            cookie: `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionToken)))}`,
-                            [SESSION_TOKEN_HEADER_NAME]: JSON.stringify(theSessionToken)
+                            cookie: `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionToken)))}`
                         },
+                        header: (_header: string) => { },
                         log: { error: (_msg: Error) => { } }
                     });
 
                     const error = new Error('Bad');
 
+                    td.when(mockReq.header(SESSION_TOKEN_HEADER_NAME)).thenReturn(JSON.stringify(theSessionToken));
                     td.when(identityClient.withContext(theSessionToken)).thenReturn(identityClient);
                     td.when(identityClient.getSession()).thenReject(error);
 
@@ -513,14 +527,15 @@ describe('SessionMiddleware', () => {
                     const mockReq = td.object({
                         requestTime: rightNow,
                         headers: {
-                            cookie: `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionTokenWithUser)))}`,
-                            [SESSION_TOKEN_HEADER_NAME]: JSON.stringify(theSessionTokenWithUser)
+                            cookie: `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionTokenWithUser)))}`
                         },
+                        header: (_header: string) => { },
                         log: { error: (_msg: Error) => { } }
                     });
 
                     const error = new UnauthorizedIdentityError('Bad');
 
+                    td.when(mockReq.header(SESSION_TOKEN_HEADER_NAME)).thenReturn(JSON.stringify(theSessionTokenWithUser));
                     td.when(identityClient.withContext(theSessionTokenWithUser)).thenReturn(identityClient);
                     td.when(identityClient.getUserOnSession()).thenReject(error);
 
@@ -552,14 +567,15 @@ describe('SessionMiddleware', () => {
                     const mockReq = td.object({
                         requestTime: rightNow,
                         headers: {
-                            cookie: `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionTokenWithUser)))}`,
-                            [SESSION_TOKEN_HEADER_NAME]: JSON.stringify(theSessionTokenWithUser)
+                            cookie: `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionTokenWithUser)))}`
                         },
+                        header: (_header: string) => { },
                         log: { error: (_msg: Error) => { } }
                     });
 
                     const error = new IdentityError('Bad');
 
+                    td.when(mockReq.header(SESSION_TOKEN_HEADER_NAME)).thenReturn(JSON.stringify(theSessionTokenWithUser));
                     td.when(identityClient.withContext(theSessionTokenWithUser)).thenReturn(identityClient);
                     td.when(identityClient.getUserOnSession()).thenReject(error);
 
@@ -591,14 +607,15 @@ describe('SessionMiddleware', () => {
                     const mockReq = td.object({
                         requestTime: rightNow,
                         headers: {
-                            cookie: `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionTokenWithUser)))}`,
-                            [SESSION_TOKEN_HEADER_NAME]: JSON.stringify(theSessionTokenWithUser)
+                            cookie: `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionTokenWithUser)))}`
                         },
+                        header: (_header: string) => { },
                         log: { error: (_msg: Error) => { } }
                     });
 
                     const error = new Error('Bad');
 
+                    td.when(mockReq.header(SESSION_TOKEN_HEADER_NAME)).thenReturn(JSON.stringify(theSessionTokenWithUser));
                     td.when(identityClient.withContext(theSessionTokenWithUser)).thenReturn(identityClient);
                     td.when(identityClient.getUserOnSession()).thenReject(error);
 

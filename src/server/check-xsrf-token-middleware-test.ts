@@ -14,7 +14,7 @@ describe('CheckXsrfTokenMiddleware', () => {
 
     const mockReq = td.object({
         session: theSession,
-        headers: {},
+        header: (_header: string) => { },
         log: {
             warn: (_message: string) => { }
         }
@@ -34,7 +34,7 @@ describe('CheckXsrfTokenMiddleware', () => {
 
         let passedCheck = false;
 
-        (mockReq as any).headers[XSRF_TOKEN_HEADER_NAME] = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+        td.when(mockReq.header(XSRF_TOKEN_HEADER_NAME)).thenReturn('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
 
         checkXsrfTokenMiddleware(mockReq as any, mockRes as any, () => { passedCheck = true });
 
@@ -45,8 +45,6 @@ describe('CheckXsrfTokenMiddleware', () => {
         const checkXsrfTokenMiddleware = newCheckXsrfTokenMiddleware();
 
         let passedCheck = false;
-
-        delete (mockReq as any).headers[XSRF_TOKEN_HEADER_NAME];
 
         checkXsrfTokenMiddleware(mockReq as any, mockRes as any, () => { passedCheck = true });
 
@@ -69,7 +67,7 @@ describe('CheckXsrfTokenMiddleware', () => {
 
             let passedCheck = false;
 
-            (mockReq as any).headers[XSRF_TOKEN_HEADER_NAME] = badToken;
+            td.when(mockReq.header(XSRF_TOKEN_HEADER_NAME)).thenReturn(badToken);
 
             checkXsrfTokenMiddleware(mockReq as any, mockRes as any, () => { passedCheck = true });
 
@@ -85,7 +83,7 @@ describe('CheckXsrfTokenMiddleware', () => {
 
         let passedCheck = false;
 
-        (mockReq as any).headers[XSRF_TOKEN_HEADER_NAME] = 'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB';
+        td.when(mockReq.header(XSRF_TOKEN_HEADER_NAME)).thenReturn('BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB');
 
         checkXsrfTokenMiddleware(mockReq as any, mockRes as any, () => { passedCheck = true });
 

@@ -21,7 +21,7 @@ export function newCheckXsrfTokenMiddleware() {
 
     return function(req: RequestWithIdentity, res: express.Response, next: express.NextFunction): any {
         try {
-            const xsrfTokenRaw = req.headers[XSRF_TOKEN_HEADER_NAME];
+            const xsrfTokenRaw = req.header(XSRF_TOKEN_HEADER_NAME);
             const xsrfToken = xsrfTokenMarshaller.extract(xsrfTokenRaw);
 
             if (xsrfToken != req.session.xsrfToken) {
