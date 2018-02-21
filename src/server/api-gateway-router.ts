@@ -31,10 +31,11 @@ import { SessionToken } from '../session-token'
  *
  * @note The router has a single path exposed: / which can only be POSTed.
  * @note The router assumes the common middleware is used.
+ * @param newOrigin - a value to use for the origin when making calls on behalf of clients.
  * @param webFetcher - a {@link WebFetcher} instance.
  * @return An express router instance which implements the gateway protocol described above.
  */
-export function newApiGatewayRouter(webFetcher: WebFetcher): express.Router {
+export function newApiGatewayRouter(newOrigin: string, webFetcher: WebFetcher): express.Router {
     const sessionTokenMarshaller = new (MarshalFrom(SessionToken))();
 
     const apiGatewayRouter = express.Router();
@@ -71,6 +72,7 @@ export function newApiGatewayRouter(webFetcher: WebFetcher): express.Router {
             newOptions.headers = {};
         }
         newOptions.headers[SESSION_TOKEN_HEADER_NAME] = JSON.stringify(sessionTokenMarshaller.pack(sessionToken as SessionToken));
+        newOptions.headers['Origin'] = newOrigin;
         const result = await webFetcher.fetch(req.body['uri'], newOptions);
         res.status(result.status);
         res.type('json');
