@@ -86,7 +86,7 @@ export class User {
     name: string;
 
     /** An uri to the picture of the user, obtained from the identity provider. */
-    @MarshalWith(r.SecureWebUriMarshaller)
+    @MarshalWith(r.WebUriMarshaller)
     pictureUri: string;
 
     /** The language of the user, as an ISO639 code. */
