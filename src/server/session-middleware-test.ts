@@ -689,7 +689,8 @@ describe('clearSessionTokenOnResponse', () => {
 
         td.verify(response.clearCookie(SESSION_TOKEN_COOKIE_NAME, {
             httpOnly: true,
-            secure: false
+            secure: false,
+            sameSite: 'lax'
         }));
     });
 
@@ -701,7 +702,8 @@ describe('clearSessionTokenOnResponse', () => {
 
             td.verify(response.clearCookie(SESSION_TOKEN_COOKIE_NAME, {
                 httpOnly: true,
-                secure: true
+                secure: true,
+                sameSite: 'lax'
             }));
         });
     }

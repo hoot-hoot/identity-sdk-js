@@ -253,7 +253,7 @@ export function setSessionTokenOnResponse(
 export function clearSessionTokenOnResponse(res: express.Response, sessionInfoSource: SessionInfoSource, env: Env) {
     switch (sessionInfoSource) {
         case SessionInfoSource.Cookie:
-            res.clearCookie(SESSION_TOKEN_COOKIE_NAME, { httpOnly: true, secure: !isLocal(env) });
+            res.clearCookie(SESSION_TOKEN_COOKIE_NAME, { httpOnly: true, secure: !isLocal(env), sameSite: 'lax' });
             break;
         case SessionInfoSource.Header:
             res.removeHeader(SESSION_TOKEN_HEADER_NAME);
