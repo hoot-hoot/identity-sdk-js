@@ -162,27 +162,8 @@ export function newSessionMiddleware(
 
                         if (e.name == 'IdentityError') {
                             req.log.error(e);
-
-                            identityClient
-                                .getOrCreateSession()
-                                .then(([sessionToken, session]) => {
-                                    req.sessionToken = sessionToken;
-                                    req.session = session;
-                                    setSessionTokenOnResponse(res, req.requestTime, sessionToken, sessionInfoSource, env);
-                                    next();
-                                })
-                                .catch(e => {
-                                    if (e.name == 'IdentityError') {
-                                        req.log.error(e);
-                                        res.status(HttpStatus.BAD_GATEWAY);
-                                        res.end();
-                                        return;
-                                    }
-
-                                    req.log.error(e);
-                                    res.status(HttpStatus.INTERNAL_SERVER_ERROR);
-                                    res.end();
-                                });
+                            res.status(HttpStatus.BAD_GATEWAY);
+                            res.end();
                             return;
                         }
 
@@ -211,27 +192,8 @@ export function newSessionMiddleware(
 
                         if (e.name == 'IdentityError') {
                             req.log.error(e);
-
-                            identityClient
-                                .getOrCreateSession()
-                                .then(([sessionToken, session]) => {
-                                    req.sessionToken = sessionToken;
-                                    req.session = session;
-                                    setSessionTokenOnResponse(res, req.requestTime, sessionToken, sessionInfoSource, env);
-                                    next();
-                                })
-                                .catch(e => {
-                                    if (e.name == 'IdentityError') {
-                                        req.log.error(e);
-                                        res.status(HttpStatus.BAD_GATEWAY);
-                                        res.end();
-                                        return;
-                                    }
-
-                                    req.log.error(e);
-                                    res.status(HttpStatus.INTERNAL_SERVER_ERROR);
-                                    res.end();
-                                });
+                            res.status(HttpStatus.BAD_GATEWAY);
+                            res.end();
                             return;
                         }
 
