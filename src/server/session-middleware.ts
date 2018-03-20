@@ -7,7 +7,7 @@ import * as HttpStatus from 'http-status-codes'
 import * as moment from 'moment'
 import { MarshalFrom } from 'raynor'
 
-import { Env, isLocal } from '@truesparrow/common-js'
+import { Env, isOnServer } from '@truesparrow/common-js'
 
 import { SessionToken } from '../session-token'
 import { IdentityClient, SESSION_TOKEN_COOKIE_NAME, SESSION_TOKEN_HEADER_NAME } from '../client'
@@ -231,7 +231,7 @@ export function setSessionTokenOnResponse(
         case SessionInfoSource.Cookie:
             res.cookie(SESSION_TOKEN_COOKIE_NAME, sessionTokenMarshaller.pack(sessionToken), {
                 httpOnly: true,
-                secure: !isLocal(env),
+                secure: isOnServer(env),
                 expires: moment.utc(rightNow).add(10000, 'days').toDate(),
                 sameSite: 'lax'
             });
@@ -253,7 +253,7 @@ export function setSessionTokenOnResponse(
 export function clearSessionTokenOnResponse(res: express.Response, sessionInfoSource: SessionInfoSource, env: Env) {
     switch (sessionInfoSource) {
         case SessionInfoSource.Cookie:
-            res.clearCookie(SESSION_TOKEN_COOKIE_NAME, { httpOnly: true, secure: !isLocal(env), sameSite: 'lax' });
+            res.clearCookie(SESSION_TOKEN_COOKIE_NAME, { httpOnly: true, secure: isOnServer(env), sameSite: 'lax' });
             break;
         case SessionInfoSource.Header:
             res.removeHeader(SESSION_TOKEN_HEADER_NAME);

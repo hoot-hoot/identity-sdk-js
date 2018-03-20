@@ -8,7 +8,7 @@ import * as td from 'testdouble'
 import { agent } from 'supertest'
 import * as uuid from 'uuid'
 
-import { Env, isLocal, WebFetcher } from '@truesparrow/common-js'
+import { Env, isOnServer, WebFetcher } from '@truesparrow/common-js'
 import { newLocalCommonServerMiddleware } from '@truesparrow/common-server-js'
 
 import {
@@ -323,9 +323,9 @@ describe('Auth0AuthFlowRouter', () => {
                         expect(response.header).contains.keys('set-cookie', 'location', 'content-type');
                         expect(response.header['set-cookie']).to.have.length(2);
                         expect(response.header['set-cookie'][0]).to.match(
-                            new RegExp(`${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionToken)))}; Path=/; Expires=.*GMT; HttpOnly;${!isLocal(env) ? " Secure;" : ""} SameSite=Lax`));
+                            new RegExp(`${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionToken)))}; Path=/; Expires=.*GMT; HttpOnly;${isOnServer(env) ? " Secure;" : ""} SameSite=Lax`));
                         expect(response.header['set-cookie'][1]).to.match(
-                            new RegExp(`${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionTokenWithUser)))}; Path=/; Expires=.*GMT; HttpOnly;${!isLocal(env) ? " Secure;" : ""} SameSite=Lax`));
+                            new RegExp(`${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionTokenWithUser)))}; Path=/; Expires=.*GMT; HttpOnly;${isOnServer(env) ? " Secure;" : ""} SameSite=Lax`));
                         expect(response.header['location']).to.eql('/admin');
                         expect(response.header['content-type']).to.eql('text/plain; charset=utf-8');
                         expect(response.text).to.eql('Found. Redirecting to /admin');
@@ -372,9 +372,9 @@ describe('Auth0AuthFlowRouter', () => {
                         expect(response.header).contains.keys('set-cookie', 'location', 'content-type');
                         expect(response.header['set-cookie']).to.have.length(2);
                         expect(response.header['set-cookie'][0]).to.match(
-                            new RegExp(`${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionTokenWithUser)))}; Path=/; Expires=.*GMT; HttpOnly;${!isLocal(env) ? " Secure;" : ""} SameSite=Lax`));
+                            new RegExp(`${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionTokenWithUser)))}; Path=/; Expires=.*GMT; HttpOnly;${isOnServer(env) ? " Secure;" : ""} SameSite=Lax`));
                         expect(response.header['set-cookie'][1]).to.match(
-                            new RegExp(`${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionTokenWithUser)))}; Path=/; Expires=.*GMT; HttpOnly;${!isLocal(env) ? " Secure;" : ""} SameSite=Lax`));
+                            new RegExp(`${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionTokenWithUser)))}; Path=/; Expires=.*GMT; HttpOnly;${isOnServer(env) ? " Secure;" : ""} SameSite=Lax`));
                         expect(response.header['location']).to.eql('/admin');
                         expect(response.header['content-type']).to.eql('text/plain; charset=utf-8');
                         expect(response.text).to.eql('Found. Redirecting to /admin');
@@ -421,9 +421,9 @@ describe('Auth0AuthFlowRouter', () => {
                         expect(response.header).contains.keys('set-cookie', 'location', 'content-type');
                         expect(response.header['set-cookie']).to.have.length(2);
                         expect(response.header['set-cookie'][0]).to.match(
-                            new RegExp(`${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionTokenWithUser)))}; Path=/; Expires=.*GMT; HttpOnly;${!isLocal(env) ? " Secure;" : ""} SameSite=Lax`));
+                            new RegExp(`${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionTokenWithUser)))}; Path=/; Expires=.*GMT; HttpOnly;${isOnServer(env) ? " Secure;" : ""} SameSite=Lax`));
                         expect(response.header['set-cookie'][1]).to.match(
-                            new RegExp(`${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theOtherSessionTokenWithUser)))}; Path=/; Expires=.*GMT; HttpOnly;${!isLocal(env) ? " Secure;" : ""} SameSite=Lax`));
+                            new RegExp(`${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theOtherSessionTokenWithUser)))}; Path=/; Expires=.*GMT; HttpOnly;${isOnServer(env) ? " Secure;" : ""} SameSite=Lax`));
                         expect(response.header['location']).to.eql('/admin');
                         expect(response.header['content-type']).to.eql('text/plain; charset=utf-8');
                         expect(response.text).to.eql('Found. Redirecting to /admin');
@@ -672,7 +672,7 @@ describe('Auth0AuthFlowRouter', () => {
                         expect(response.header).contains.keys('set-cookie', 'location', 'content-type');
                         expect(response.header['set-cookie']).to.have.length(2);
                         expect(response.header['set-cookie'][0]).to.match(
-                            new RegExp(`${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionTokenWithUser)))}; Path=/; Expires=.*GMT; HttpOnly;${!isLocal(env) ? " Secure;" : ""} SameSite=Lax`));
+                            new RegExp(`${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionTokenWithUser)))}; Path=/; Expires=.*GMT; HttpOnly;${isOnServer(env) ? " Secure;" : ""} SameSite=Lax`));
                         expect(response.header['set-cookie'][1]).to.match(
                             new RegExp(`${SESSION_TOKEN_COOKIE_NAME}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly`));
                         expect(response.header['location']).to.eql('/');

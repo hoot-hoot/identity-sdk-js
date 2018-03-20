@@ -83,11 +83,11 @@ describe('SessionMiddleware', () => {
 
     const testCases = [
         { source: SessionInfoSource.Cookie, env: Env.Local, secure: false },
-        { source: SessionInfoSource.Cookie, env: Env.Test, secure: true },
+        { source: SessionInfoSource.Cookie, env: Env.Test, secure: false },
         { source: SessionInfoSource.Cookie, env: Env.Staging, secure: true },
         { source: SessionInfoSource.Cookie, env: Env.Prod, secure: true },
         { source: SessionInfoSource.Header, env: Env.Local, secure: false },
-        { source: SessionInfoSource.Header, env: Env.Test, secure: true },
+        { source: SessionInfoSource.Header, env: Env.Test, secure: false },
         { source: SessionInfoSource.Header, env: Env.Staging, secure: true },
         { source: SessionInfoSource.Header, env: Env.Prod, secure: true },
     ];
@@ -641,20 +641,22 @@ describe('setSessionTokenOnResponse', () => {
     const rightNow: Date = new Date(Date.UTC(2017, 11, 24));
     const toolTimeLater: Date = new Date(Date.UTC(2045, 4, 11));
 
-    it('sets a non-secure http same-site cookie for the cookie source and local env', () => {
-        const response = td.object({ cookie: (_n: string, _d: any, _c: any) => { } });
+    for (let env of [Env.Local, Env.Test]) {
+        it('sets a non-secure http same-site cookie for the cookie source and env=${env}', () => {
+            const response = td.object({ cookie: (_n: string, _d: any, _c: any) => { } });
 
-        setSessionTokenOnResponse(response as express.Response, rightNow, theSessionToken, SessionInfoSource.Cookie, Env.Local);
+            setSessionTokenOnResponse(response as express.Response, rightNow, theSessionToken, SessionInfoSource.Cookie, env);
 
-        td.verify(response.cookie(SESSION_TOKEN_COOKIE_NAME, { sessionId: theSessionToken.sessionId }, {
-            httpOnly: true,
-            secure: false,
-            expires: toolTimeLater,
-            sameSite: 'lax'
-        }));
-    });
+            td.verify(response.cookie(SESSION_TOKEN_COOKIE_NAME, { sessionId: theSessionToken.sessionId }, {
+                httpOnly: true,
+                secure: false,
+                expires: toolTimeLater,
+                sameSite: 'lax'
+            }));
+        });
+    }
 
-    for (let env of [Env.Test, Env.Staging, Env.Prod]) {
+    for (let env of [Env.Staging, Env.Prod]) {
         it(`sets a non-secure http same-site cookie for the cookie source and non-local env=${env}`, () => {
             const response = td.object({ cookie: (_n: string, _d: any, _c: any) => { } });
 
@@ -682,19 +684,21 @@ describe('setSessionTokenOnResponse', () => {
 
 
 describe('clearSessionTokenOnResponse', () => {
-    it('clears a non-secure cookie for the cookie source and the local env', () => {
-        const response = td.object({ clearCookie: (_n: string, _c: any) => { } });
+    for (let env of [Env.Local, Env.Test]) {
+        it('clears a non-secure cookie for the cookie source and the local env=${env}', () => {
+            const response = td.object({ clearCookie: (_n: string, _c: any) => { } });
 
-        clearSessionTokenOnResponse(response as express.Response, SessionInfoSource.Cookie, Env.Local);
+            clearSessionTokenOnResponse(response as express.Response, SessionInfoSource.Cookie, env);
 
-        td.verify(response.clearCookie(SESSION_TOKEN_COOKIE_NAME, {
-            httpOnly: true,
-            secure: false,
-            sameSite: 'lax'
-        }));
-    });
+            td.verify(response.clearCookie(SESSION_TOKEN_COOKIE_NAME, {
+                httpOnly: true,
+                secure: false,
+                sameSite: 'lax'
+            }));
+        });
+    }
 
-    for (let env of [Env.Test, Env.Staging, Env.Prod]) {
+    for (let env of [Env.Staging, Env.Prod]) {
         it(`sets a non-secure http same-site cookie for the cookie source and non-local env=${env}`, () => {
             const response = td.object({ clearCookie: (_n: string, _c: any) => { } });
 
