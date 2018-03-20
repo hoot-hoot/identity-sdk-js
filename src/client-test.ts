@@ -128,9 +128,17 @@ describe('IdentityClient', () => {
         const client = newIdentityClient(Env.Local, 'core', 'identity', fetcher as WebFetcher);
 
         expect(client).is.not.null;
+        expect((client as any)._protocol).is.eql('http');
     });
 
-    for (let env of [Env.Test, Env.Staging, Env.Prod]) {
+    it('can be constructed in test', () => {
+        const client = newIdentityClient(Env.Test, 'core', 'identity', fetcher as WebFetcher);
+
+        expect(client).is.not.null;
+        expect((client as any)._protocol).is.eql('http');
+    });
+
+    for (let env of [Env.Staging, Env.Prod]) {
         it(`can be constructed in non-local env=${env}`, () => {
             const client = newIdentityClient(env, 'core', 'identity', fetcher as WebFetcher);
 

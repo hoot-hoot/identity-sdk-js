@@ -4,7 +4,7 @@
 import * as HttpStatus from 'http-status-codes'
 import { Marshaller, MarshalFrom } from 'raynor'
 
-import { Env, isLocal, WebFetcher } from '@truesparrow/common-js'
+import { Env, isNotOnServer, WebFetcher } from '@truesparrow/common-js'
 
 import { SessionToken } from './session-token'
 import { PublicUser, Session } from './entities'
@@ -232,7 +232,7 @@ class IdentityClientImpl implements IdentityClient {
             this._defaultHeaders[SESSION_TOKEN_HEADER_NAME] = JSON.stringify(this._sessionTokenMarshaller.pack(sessionToken));
         }
 
-        if (isLocal(this._env)) {
+        if (isNotOnServer(this._env)) {
             this._protocol = 'http';
         } else {
             this._protocol = 'https';
