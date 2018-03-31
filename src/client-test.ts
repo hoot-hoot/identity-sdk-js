@@ -143,7 +143,7 @@ describe('IdentityClient', () => {
             const client = newIdentityClient(env, 'core', 'identity', fetcher as WebFetcher);
 
             expect(client).is.not.null;
-            expect((client as any)._protocol).is.eql('https');
+            expect((client as any)._protocol).is.eql('http');
         });
     }
 
