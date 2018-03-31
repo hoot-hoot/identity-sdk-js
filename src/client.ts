@@ -4,7 +4,7 @@
 import * as HttpStatus from 'http-status-codes'
 import { Marshaller, MarshalFrom } from 'raynor'
 
-import { Env, isNotOnServer, WebFetcher } from '@truesparrow/common-js'
+import { WebFetcher } from '@truesparrow/common-js'
 
 import { SessionToken } from './session-token'
 import { PublicUser, Session } from './entities'
@@ -119,21 +119,19 @@ export interface IdentityClient {
 
 /**
  * Create an {@link IdentityClient}.
- * @param env - the {@link Env} the client is running in.
  * @param origin - the [origin]{@link https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Origin}
  *     to use for the requests originating from the client. Doesn't "change" things for browser work.
  * @param identityServiceHost - the hostname for the identity service servers.
  * @param webFetcher - a {@link WebFetcher} to use to make requests.
  * @return a new {@link IdentityClient}. On server there's no context, whereas on the browser it's implied.
  */
-export function newIdentityClient(env: Env, origin: string, identityServiceHost: string, webFetcher: WebFetcher): IdentityClient {
+export function newIdentityClient(origin: string, identityServiceHost: string, webFetcher: WebFetcher): IdentityClient {
     const sessionTokenMarshaller = new (MarshalFrom(SessionToken))();
     const sessionAndTokenResponseMarshaller = new (MarshalFrom(SessionAndTokenResponse))();
     const sessionResponseMarshaller = new (MarshalFrom(SessionResponse))();
     const usersInfoResponseMarshaller = new (MarshalFrom(UsersInfoResponse))();
 
     return new IdentityClientImpl(
-        env,
         origin,
         identityServiceHost,
         webFetcher,
@@ -194,7 +192,6 @@ class IdentityClientImpl implements IdentityClient {
         referrer: 'client',
     };
 
-    private readonly _env: Env;
     private readonly _origin: string;
     private readonly _identityServiceHost: string;
     private readonly _webFetcher: WebFetcher;
@@ -203,10 +200,8 @@ class IdentityClientImpl implements IdentityClient {
     private readonly _sessionResponseMarshaller: Marshaller<SessionResponse>;
     private readonly _usersInfoResponseMarshaller: Marshaller<UsersInfoResponse>;
     private readonly _defaultHeaders: HeadersInit;
-    private readonly _protocol: string;
 
     constructor(
-        env: Env,
         origin: string,
         identityServiceHost: string,
         webFetcher: WebFetcher,
@@ -215,7 +210,6 @@ class IdentityClientImpl implements IdentityClient {
         sessionResponseMarshaller: Marshaller<SessionResponse>,
         usersInfoResponseMarshaller: Marshaller<UsersInfoResponse>,
         sessionToken: SessionToken | null = null) {
-        this._env = env;
         this._origin = origin;
         this._identityServiceHost = identityServiceHost;
         this._webFetcher = webFetcher;
@@ -231,17 +225,10 @@ class IdentityClientImpl implements IdentityClient {
         if (sessionToken != null) {
             this._defaultHeaders[SESSION_TOKEN_HEADER_NAME] = JSON.stringify(this._sessionTokenMarshaller.pack(sessionToken));
         }
-
-        if (isNotOnServer(this._env)) {
-            this._protocol = 'http';
-        } else {
-            this._protocol = 'http'; // TODO: fix this!
-        }
     }
 
     withContext(sessionToken: SessionToken): IdentityClient {
         return new IdentityClientImpl(
-            this._env,
             this._origin,
             this._identityServiceHost,
             this._webFetcher,
@@ -257,7 +244,7 @@ class IdentityClientImpl implements IdentityClient {
 
         let rawResponse: Response;
         try {
-            rawResponse = await this._webFetcher.fetch(`${this._protocol}://${this._identityServiceHost}/api/sessions`, options);
+            rawResponse = await this._webFetcher.fetch(`http://${this._identityServiceHost}/api/sessions`, options);
         } catch (e) {
             throw new IdentityError(`Request failed because '${e.toString()}'`);
         }
@@ -280,7 +267,7 @@ class IdentityClientImpl implements IdentityClient {
 
         let rawResponse: Response;
         try {
-            rawResponse = await this._webFetcher.fetch(`${this._protocol}://${this._identityServiceHost}/api/sessions`, options);
+            rawResponse = await this._webFetcher.fetch(`http://${this._identityServiceHost}/api/sessions`, options);
         } catch (e) {
             throw new IdentityError(`Request failed because '${e.toString()}'`);
         }
@@ -305,7 +292,7 @@ class IdentityClientImpl implements IdentityClient {
 
         let rawResponse: Response;
         try {
-            rawResponse = await this._webFetcher.fetch(`${this._protocol}://${this._identityServiceHost}/api/sessions`, options);
+            rawResponse = await this._webFetcher.fetch(`http://${this._identityServiceHost}/api/sessions`, options);
         } catch (e) {
             throw new IdentityError(`Request failed because '${e.toString()}'`);
         }
@@ -324,7 +311,7 @@ class IdentityClientImpl implements IdentityClient {
 
         let rawResponse: Response;
         try {
-            rawResponse = await this._webFetcher.fetch(`${this._protocol}://${this._identityServiceHost}/api/sessions/agree-to-cookie-policy`, options);
+            rawResponse = await this._webFetcher.fetch(`http://${this._identityServiceHost}/api/sessions/agree-to-cookie-policy`, options);
         } catch (e) {
             throw new IdentityError(`Request failed because '${e.toString()}'`);
         }
@@ -349,7 +336,7 @@ class IdentityClientImpl implements IdentityClient {
 
         let rawResponse: Response;
         try {
-            rawResponse = await this._webFetcher.fetch(`${this._protocol}://${this._identityServiceHost}/api/users`, options);
+            rawResponse = await this._webFetcher.fetch(`http://${this._identityServiceHost}/api/users`, options);
         } catch (e) {
             throw new IdentityError(`Request failed because '${e.toString()}'`);
         }
@@ -374,7 +361,7 @@ class IdentityClientImpl implements IdentityClient {
 
         let rawResponse: Response;
         try {
-            rawResponse = await this._webFetcher.fetch(`${this._protocol}://${this._identityServiceHost}/api/users`, options);
+            rawResponse = await this._webFetcher.fetch(`http://${this._identityServiceHost}/api/users`, options);
         } catch (e) {
             throw new IdentityError(`Request failed because '${e.toString()}'`);
         }
@@ -407,7 +394,7 @@ class IdentityClientImpl implements IdentityClient {
         let rawResponse: Response;
         try {
             const encodedIds = encodeURIComponent(JSON.stringify(dedupedIds));
-            rawResponse = await this._webFetcher.fetch(`${this._protocol}://${this._identityServiceHost}/api/users-info?ids=${encodedIds}`, options);
+            rawResponse = await this._webFetcher.fetch(`http://${this._identityServiceHost}/api/users-info?ids=${encodedIds}`, options);
         } catch (e) {
             throw new IdentityError(`Request failed because '${e.toString()}'`);
         }
