@@ -72,7 +72,8 @@ export function newApiGatewayRouter(newOrigin: string, webFetcher: WebFetcher): 
             newOptions.headers = {};
         }
         newOptions.headers[SESSION_TOKEN_HEADER_NAME] = JSON.stringify(sessionTokenMarshaller.pack(sessionToken as SessionToken));
-        newOptions.headers['Origin'] = newOrigin;
+        newOptions.headers['Origin'] = newOptions.headers['Origin'];
+        newOptions.headers['X-Truesparrow-ViaGateway'] = newOrigin;
         const result = await webFetcher.fetch(req.body['uri'], newOptions);
         res.status(result.status);
         res.type('json');

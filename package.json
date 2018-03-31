@@ -1,6 +1,6 @@
 {
     "name": "@truesparrow/identity-sdk-js",
-    "version": "1.7.1",
+    "version": "1.7.2",
     "description": "The SDK for the identity serivce",
     "author": "CHM SQRT2 Team",
     "scripts": {
