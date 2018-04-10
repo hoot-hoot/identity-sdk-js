@@ -85,11 +85,11 @@ describe('SessionMiddleware', () => {
         { source: SessionInfoSource.Cookie, env: Env.Local, secure: false },
         { source: SessionInfoSource.Cookie, env: Env.Test, secure: false },
         { source: SessionInfoSource.Cookie, env: Env.Staging, secure: true },
-        { source: SessionInfoSource.Cookie, env: Env.Prod, secure: true },
+        { source: SessionInfoSource.Cookie, env: Env.Live, secure: true },
         { source: SessionInfoSource.Header, env: Env.Local, secure: false },
         { source: SessionInfoSource.Header, env: Env.Test, secure: false },
         { source: SessionInfoSource.Header, env: Env.Staging, secure: true },
-        { source: SessionInfoSource.Header, env: Env.Prod, secure: true },
+        { source: SessionInfoSource.Header, env: Env.Live, secure: true },
     ];
 
     afterEach('reset test doubles', () => {
@@ -656,7 +656,7 @@ describe('setSessionTokenOnResponse', () => {
         });
     }
 
-    for (let env of [Env.Staging, Env.Prod]) {
+    for (let env of [Env.Staging, Env.Live]) {
         it(`sets a non-secure http same-site cookie for the cookie source and non-local env=${env}`, () => {
             const response = td.object({ cookie: (_n: string, _d: any, _c: any) => { } });
 
@@ -671,7 +671,7 @@ describe('setSessionTokenOnResponse', () => {
         });
     }
 
-    for (let env of [Env.Local, Env.Test, Env.Staging, Env.Prod]) {
+    for (let env of [Env.Local, Env.Test, Env.Staging, Env.Live]) {
         it(`sets a header for the header source env=${env}`, () => {
             const response = td.object({ setHeader: (_n: string, _d: string) => { } });
 
@@ -698,7 +698,7 @@ describe('clearSessionTokenOnResponse', () => {
         });
     }
 
-    for (let env of [Env.Staging, Env.Prod]) {
+    for (let env of [Env.Staging, Env.Live]) {
         it(`sets a non-secure http same-site cookie for the cookie source and non-local env=${env}`, () => {
             const response = td.object({ clearCookie: (_n: string, _c: any) => { } });
 
@@ -712,7 +712,7 @@ describe('clearSessionTokenOnResponse', () => {
         });
     }
 
-    for (let env of [Env.Local, Env.Test, Env.Staging, Env.Prod]) {
+    for (let env of [Env.Local, Env.Test, Env.Staging, Env.Live]) {
         it(`sets a header for the header source env=${env}`, () => {
             const response = td.object({ removeHeader: (_n: string) => { } });
 

@@ -284,7 +284,7 @@ describe('Auth0AuthFlowRouter', () => {
             getOrCreateUserOnSession: (_s: Session) => { }
         });
 
-        for (let env of [Env.Local, Env.Staging, Env.Test, Env.Prod]) {
+        for (let env of [Env.Local, Env.Staging, Env.Test, Env.Live]) {
             it(`should work with a session env=${env}`, async () => {
                 const response = td.object({
                     ok: true,
@@ -657,7 +657,7 @@ describe('Auth0AuthFlowRouter', () => {
             removeSession: (_s: Session) => { }
         });
 
-        for (let env of [Env.Local, Env.Test, Env.Staging, Env.Prod]) {
+        for (let env of [Env.Local, Env.Test, Env.Staging, Env.Live]) {
             it('should work with a session and user', async () => {
                 const appAgent = buildAppAgent(env, webFetcher as WebFetcher, identityClient as IdentityClient);
 
