@@ -9,6 +9,12 @@ export class Auth0ClientConfig {
     domain: string;
     /** The uri to invoke in the auth flow for logins. */
     loginCallbackUri: string;
+    /** Logo URI used as part of a larger styling effort. */
+    styleLogoUri: string;
+    /** Primary color used as part of a larger styling effort. */
+    stylePrimaryColor: string;
+    /** Application name used as part of a larger styling effort. */
+    styleApplicationName: string;
 }
 
 /** The [Auth0]{@link https://auth0.com} configuration for _server_ code. Should be secret. */
@@ -21,6 +27,12 @@ export class Auth0ServerConfig {
     domain: string;
     /** The uri to invoke in the auth flow for logins. */
     loginCallbackUri: string;
+    /** Logo URI used as part of a larger styling effort. */
+    styleLogoUri: string;
+    /** Primary color used as part of a larger styling effort. */
+    stylePrimaryColor: string;
+    /** Application name used as part of a larger styling effort. */
+    styleApplicationName: string;
 }
 
 
@@ -33,6 +45,9 @@ export function serverToClient(auth0ServerConfig: Auth0ServerConfig): Auth0Clien
     return {
         clientId: auth0ServerConfig.clientId,
         domain: auth0ServerConfig.domain,
-        loginCallbackUri: auth0ServerConfig.loginCallbackUri
+        loginCallbackUri: auth0ServerConfig.loginCallbackUri,
+        styleLogoUri: auth0ServerConfig.styleLogoUri,
+        stylePrimaryColor: auth0ServerConfig.stylePrimaryColor,
+        styleApplicationName: auth0ServerConfig.styleApplicationName
     };
 }

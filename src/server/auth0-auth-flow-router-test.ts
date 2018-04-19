@@ -219,7 +219,7 @@ describe('Auth0AuthorizeRedirectInfo', () => {
 });
 
 
-describe.only('Auth0AuthFlowRouter', () => {
+describe('Auth0AuthFlowRouter', () => {
     const allowedPaths: PathMatch[] = [
         { path: '/', mode: 'full' },
         { path: '/admin', mode: 'full' },
@@ -230,7 +230,11 @@ describe.only('Auth0AuthFlowRouter', () => {
         clientId: 'foo',
         clientSecret: 'bar',
         domain: 'some-domain',
-        loginCallbackUri: '/login'
+        loginCallbackUri: '/login',
+        styleLogoUri: '/real/client/android-chrome-192x192.png',
+        stylePrimaryColor: '#fefefe',
+
+        styleApplicationName: 'TruSpar'
     };
 
     const sessionTokenMarshaller = new (MarshalFrom(SessionToken))();
