@@ -13,29 +13,29 @@ describe('PostLoginRedirectInfo', () => {
 
     describe('marshalling', () => {
         const allowedPaths: PathMatch[] = [
-            {path: '/', mode: 'full'},
-            {path: '/admin', mode: 'full'},
-            {path: '/admin/', mode: 'prefix'}
+            { path: '/', mode: 'full' },
+            { path: '/admin', mode: 'full' },
+            { path: '/admin/', mode: 'prefix' }
         ];
 
         const postLoginRedirectInfos = [
-            [quickEncode({path: '/'}), new PostLoginRedirectInfo('/')],
-            [quickEncode({path: '/admin'}), new PostLoginRedirectInfo('/admin')],
-            [quickEncode({path: '/admin/foo'}), new PostLoginRedirectInfo('/admin/foo')],
-            [quickEncode({path: '/admin/foo?id=10'}), new PostLoginRedirectInfo('/admin/foo?id=10')]
+            [quickEncode({ path: '/' }), new PostLoginRedirectInfo('/')],
+            [quickEncode({ path: '/admin' }), new PostLoginRedirectInfo('/admin')],
+            [quickEncode({ path: '/admin/foo' }), new PostLoginRedirectInfo('/admin/foo')],
+            [quickEncode({ path: '/admin/foo?id=10' }), new PostLoginRedirectInfo('/admin/foo?id=10')]
         ];
 
         const badPathPostLoginRedirectInfos = [
-            [quickEncode({path: '/a-bad-path'}), '/a-bad-path'],
-            [quickEncode({path: '/xadmin'}), '/xadmin'],
-            [quickEncode({path: '/admin-foo'}), '/admin-foo']
+            [quickEncode({ path: '/a-bad-path' }), '/a-bad-path'],
+            [quickEncode({ path: '/xadmin' }), '/xadmin'],
+            [quickEncode({ path: '/admin-foo' }), '/admin-foo']
         ];
 
         const simplyBadPostLoginRedirectInfos = [
-            quickEncode({path: 'admin'}),
-            quickEncode({path: ''}),
+            quickEncode({ path: 'admin' }),
+            quickEncode({ path: '' }),
             quickEncode({}),
-            quickEncode({pathx: '/admin'}),
+            quickEncode({ pathx: '/admin' }),
             'a-badly-encoded-thing'
         ];
 

@@ -210,6 +210,51 @@ describe('SessionMiddleware', () => {
         }
     });
 
+    describe('should recreate a simple session when user token is present but not accepted', () => {
+        for (let sessionLevel of [SessionLevel.None, SessionLevel.Session, SessionLevel.SessionAndUser]) {
+            for (let { source, env, secure } of testCases) {
+                it(`for sessionLevel=${sessionLevel} and source=${source} and env=${env}`, () => {
+                    const sessionMiddleware = newSessionMiddleware(sessionLevel, source, env, identityClient as IdentityClient);
+
+                    const mockReq = td.object({
+                        requestTime: rightNow,
+                        sessionToken: null,
+                        session: null,
+                        headers: {
+                            cookie: `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionTokenWithUser)))}`
+                        },
+                        header: (_header: string) => { },
+                        log: { error: (_msg: Error) => { } }
+                    });
+
+                    const error = new UnauthorizedIdentityError('Bad');
+
+                    td.when(mockReq.header(SESSION_TOKEN_HEADER_NAME)).thenReturn(JSON.stringify(theSessionTokenWithUser));
+                    td.when(identityClient.withContext(theSessionTokenWithUser)).thenReturn(identityClient);
+                    td.when(identityClient.getUserOnSession()).thenReject(error);
+                    td.when(identityClient.getOrCreateSession()).thenResolve([theSessionToken, theSession]);
+
+                    sessionMiddleware(mockReq as any, mockRes as any, () => {
+                        expect(mockReq.sessionToken).to.eql(theSessionToken);
+                        expect(mockReq.session).to.eql(theSession);
+                        if (source == SessionInfoSource.Cookie) {
+                            td.verify(mockRes.cookie(SESSION_TOKEN_COOKIE_NAME, { sessionId: theSessionToken.sessionId }, {
+                                httpOnly: true,
+                                secure: secure,
+                                expires: toolTimeLater,
+                                sameSite: 'lax'
+                            }));
+                        } else {
+                            td.verify(mockRes.setHeader(SESSION_TOKEN_HEADER_NAME, JSON.stringify({ sessionId: theSessionToken.sessionId })));
+                        }
+                    });
+                });
+            }
+        }
+    });
+
+
+
     describe('should return BAD_REQUEST when there is no session information attached but there should be one', () => {
         for (let sessionLevel of [SessionLevel.Session, SessionLevel.SessionAndUser]) {
             for (let { source, env } of testCases) {
@@ -505,46 +550,6 @@ describe('SessionMiddleware', () => {
                         expect(called).to.be.false;
                         td.verify(mockReq.log.error(error));
                         td.verify(mockRes.status(HttpStatus.INTERNAL_SERVER_ERROR));
-                        td.verify(mockRes.end());
-                        done();
-                    });
-                });
-            }
-        }
-    });
-
-    describe('should return UNAUTHORIZED when session and user retrieval ends with UnauthorizedIdentityError', () => {
-        for (let sessionLevel of [SessionLevel.None, SessionLevel.Session, SessionLevel.SessionAndUser]) {
-            for (let { source, env } of testCases) {
-                it(`for sessionLevel=${sessionLevel} and source=${source} and env=${env}`, (done) => {
-                    const identityClient = td.object({
-                        withContext: (_t: SessionToken) => { },
-                        getUserOnSession: () => { }
-                    });
-                    const sessionMiddleware = newSessionMiddleware(sessionLevel, source, env, identityClient as IdentityClient);
-                    let called = false;
-
-                    const mockReq = td.object({
-                        requestTime: rightNow,
-                        headers: {
-                            cookie: `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionTokenWithUser)))}`
-                        },
-                        header: (_header: string) => { },
-                        log: { error: (_msg: Error) => { } }
-                    });
-
-                    const error = new UnauthorizedIdentityError('Bad');
-
-                    td.when(mockReq.header(SESSION_TOKEN_HEADER_NAME)).thenReturn(JSON.stringify(theSessionTokenWithUser));
-                    td.when(identityClient.withContext(theSessionTokenWithUser)).thenReturn(identityClient);
-                    td.when(identityClient.getUserOnSession()).thenReject(error);
-
-                    sessionMiddleware(mockReq as any, mockRes as any, () => { called = true; });
-
-                    setTimeout(() => {
-                        expect(called).to.be.false;
-                        td.verify(mockReq.log.error(error));
-                        td.verify(mockRes.status(HttpStatus.UNAUTHORIZED));
                         td.verify(mockRes.end());
                         done();
                     });

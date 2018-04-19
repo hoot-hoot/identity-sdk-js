@@ -98,26 +98,7 @@ export function newSessionMiddleware(
                     return;
                 }
 
-                identityClient
-                    .getOrCreateSession()
-                    .then(([sessionToken, session]) => {
-                        req.sessionToken = sessionToken;
-                        req.session = session;
-                        setSessionTokenOnResponse(res, req.requestTime, sessionToken, sessionInfoSource, env);
-                        next();
-                    })
-                    .catch(e => {
-                        if (e.name == 'IdentityError') {
-                            req.log.error(e);
-                            res.status(HttpStatus.BAD_GATEWAY);
-                            res.end();
-                            return;
-                        }
-
-                        req.log.error(e);
-                        res.status(HttpStatus.INTERNAL_SERVER_ERROR);
-                        res.end();
-                    });
+                tryCreateSession(req, res, next);
                 return;
             }
 
@@ -184,9 +165,10 @@ export function newSessionMiddleware(
                     })
                     .catch(e => {
                         if (e.name == 'UnauthorizedIdentityError') {
-                            req.log.error(e);
-                            res.status(HttpStatus.UNAUTHORIZED);
-                            res.end();
+                            // Sometimes user tokens become invalid and aren't accepted by the identity system.
+                            // If this is the case, we retry creating a new session. This'll trigger an login
+                            // and all that flow if the page which is visited requires it. But it's a good flow.
+                            tryCreateSession(req, res, next);
                             return;
                         }
 
@@ -205,6 +187,29 @@ export function newSessionMiddleware(
             }
         });
     };
+
+    function tryCreateSession(req: RequestWithIdentity, res: express.Response, next: express.NextFunction) {
+        identityClient
+            .getOrCreateSession()
+            .then(([sessionToken, session]) => {
+                req.sessionToken = sessionToken;
+                req.session = session;
+                setSessionTokenOnResponse(res, req.requestTime, sessionToken, sessionInfoSource, env);
+                next();
+            })
+            .catch(e => {
+                if (e.name == 'IdentityError') {
+                    req.log.error(e);
+                    res.status(HttpStatus.BAD_GATEWAY);
+                    res.end();
+                    return;
+                }
+
+                req.log.error(e);
+                res.status(HttpStatus.INTERNAL_SERVER_ERROR);
+                res.end();
+            });
+    }
 }
 
 

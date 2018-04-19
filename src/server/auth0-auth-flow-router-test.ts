@@ -29,8 +29,7 @@ import {
 import {
     IdentityClient,
     IdentityError,
-    SESSION_TOKEN_COOKIE_NAME,
-    UnauthorizedIdentityError
+    SESSION_TOKEN_COOKIE_NAME
 } from '../client'
 import { PrivateUser, Role, Session, SessionState, UserState } from '../entities'
 import { SessionToken } from '../session-token'
@@ -220,7 +219,7 @@ describe('Auth0AuthorizeRedirectInfo', () => {
 });
 
 
-describe('Auth0AuthFlowRouter', () => {
+describe.only('Auth0AuthFlowRouter', () => {
     const allowedPaths: PathMatch[] = [
         { path: '/', mode: 'full' },
         { path: '/admin', mode: 'full' },
@@ -281,6 +280,7 @@ describe('Auth0AuthFlowRouter', () => {
             withContext: (_t: SessionToken) => { },
             getSession: () => { },
             getUserOnSession: () => { },
+            getOrCreateSession: () => { },
             getOrCreateUserOnSession: (_s: Session) => { }
         });
 
@@ -334,7 +334,7 @@ describe('Auth0AuthFlowRouter', () => {
                     });
             });
 
-            it('should work with a session with a user', async () => {
+            it('should work with a session with a user env=${env}', async () => {
                 const response = td.object({
                     ok: true,
                     json: () => { }
@@ -383,7 +383,7 @@ describe('Auth0AuthFlowRouter', () => {
                     });
             });
 
-            it('should work with a session with a user when we get a new token', async () => {
+            it('should work with a session with a user when we get a new token env=${env}', async () => {
                 const response = td.object({
                     ok: true,
                     json: () => { }
@@ -432,12 +432,16 @@ describe('Auth0AuthFlowRouter', () => {
                     });
             });
 
+            it.skip(`should work with a session with a user which is rejected for env=${env}`, async () => {
+                // TODO: do this
+            });
+
             for (let [text, cookieData] of [
                 ['when the session token is not present', ''],
                 ['when the session token is bad', `${SESSION_TOKEN_COOKIE_NAME}=bad-token`],
                 ['when the session token has bad data', `${SESSION_TOKEN_COOKIE_NAME}=${JSON.stringify({ foo: "bar" })}`],
             ]) {
-                it(`return BAD_REQUEST ${text}`, async () => {
+                it(`return BAD_REQUEST ${text} for env=${env}`, async () => {
                     const appAgent = buildAppAgent(env, webFetcher as WebFetcher, identityClient as IdentityClient);
 
                     await appAgent
@@ -452,7 +456,6 @@ describe('Auth0AuthFlowRouter', () => {
             }
 
             for (let [text, error, statusCode] of [
-                ['UNAUTHORIZED when the identity service does not accept the user', new UnauthorizedIdentityError('Unauthorized'), HttpStatus.UNAUTHORIZED],
                 ['BAD_GATEWAY when the identity service errors', new IdentityError('Error'), HttpStatus.BAD_GATEWAY],
                 ['INTERNAL_SERVER_ERROR when there is another error', new Error('Bad error'), HttpStatus.INTERNAL_SERVER_ERROR]
             ]) {
@@ -481,7 +484,7 @@ describe('Auth0AuthFlowRouter', () => {
                 '?code=some_code&state=foo',
                 '?code=some_code&state=' + postLoginRedirectInfoMarshaller.pack(new PostLoginRedirectInfo('/adminx')),
             ]) {
-                it(`should return BAD_REQUEST when the query parameters are bad for "${params}"`, async () => {
+                it(`should return BAD_REQUEST when the query parameters are bad for "${params}" for env=${env}`, async () => {
                     const appAgent = buildAppAgent(env, webFetcher as WebFetcher, identityClient as IdentityClient);
 
                     td.when(identityClient.withContext(theSessionToken)).thenReturn(identityClient);
@@ -496,7 +499,7 @@ describe('Auth0AuthFlowRouter', () => {
                 });
             }
 
-            it('should return BAD_GATEWAY when the fetch fails', async () => {
+            it('should return BAD_GATEWAY when the fetch fails for env=${env}', async () => {
                 const appAgent = buildAppAgent(env, webFetcher as WebFetcher, identityClient as IdentityClient);
 
                 td.when(webFetcher.fetch('https://some-domain/oauth/token', {
@@ -527,7 +530,7 @@ describe('Auth0AuthFlowRouter', () => {
                     });
             });
 
-            it('should return BAD_GATEWAY when the fetch has a problem', async () => {
+            it('should return BAD_GATEWAY when the fetch has a problem for env=${env}', async () => {
                 const response = td.object({
                     ok: false,
                     status: HttpStatus.BAD_GATEWAY
@@ -563,7 +566,7 @@ describe('Auth0AuthFlowRouter', () => {
                     });
             });
 
-            it('should return INTERNAL_SERVER_ERROR when the fetched Auth0 data cannot be decoded', async () => {
+            it('should return INTERNAL_SERVER_ERROR when the fetched Auth0 data cannot be decoded for env=${env}', async () => {
                 const response = td.object({
                     ok: true,
                     json: () => { }
@@ -601,11 +604,10 @@ describe('Auth0AuthFlowRouter', () => {
             });
 
             for (let [text, error, statusCode] of [
-                ['UNAUTHORIZED when the identity service does not accept the user', new UnauthorizedIdentityError('Unauthorized'), HttpStatus.UNAUTHORIZED],
                 ['BAD_GATEWAY when the identity service errors', new IdentityError('Error'), HttpStatus.BAD_GATEWAY],
                 ['INTERNAL_SERVER_ERROR when there is another error', new Error('Bad error'), HttpStatus.INTERNAL_SERVER_ERROR]
             ]) {
-                it(`when the user creation fails it should return ${text}`, async () => {
+                it(`when the user creation fails it should return ${text} for env=${env}`, async () => {
                     const response = td.object({
                         ok: true,
                         json: () => { }
@@ -658,7 +660,7 @@ describe('Auth0AuthFlowRouter', () => {
         });
 
         for (let env of [Env.Local, Env.Test, Env.Staging, Env.Live]) {
-            it('should work with a session and user', async () => {
+            it(`should work with a session and user for ${env}`, async () => {
                 const appAgent = buildAppAgent(env, webFetcher as WebFetcher, identityClient as IdentityClient);
 
                 td.when(identityClient.withContext(theSessionTokenWithUser)).thenReturn(identityClient);
@@ -691,7 +693,7 @@ describe('Auth0AuthFlowRouter', () => {
                 ['when the session token has bad data', `${SESSION_TOKEN_COOKIE_NAME}=${JSON.stringify({ foo: "bar" })}`],
                 ['when the session token does not contain user info', `${SESSION_TOKEN_COOKIE_NAME}=${encodeURIComponent('j:' + JSON.stringify(sessionTokenMarshaller.pack(theSessionToken)))}`]
             ]) {
-                it(`return BAD_REQUEST ${text}`, async () => {
+                it(`return BAD_REQUEST ${text} for ${env}`, async () => {
                     const appAgent = buildAppAgent(env, webFetcher as WebFetcher, identityClient as IdentityClient);
 
                     await appAgent
@@ -706,7 +708,6 @@ describe('Auth0AuthFlowRouter', () => {
             }
 
             for (let [text, error, statusCode] of [
-                ['UNAUTHORIZED when the identity service does not accept the user', new UnauthorizedIdentityError('Unauthorized'), HttpStatus.UNAUTHORIZED],
                 ['BAD_GATEWAY when the identity service errors', new IdentityError('Error'), HttpStatus.BAD_GATEWAY],
                 ['INTERNAL_SERVER_ERROR when there is another error', new Error('Bad error'), HttpStatus.INTERNAL_SERVER_ERROR]
             ]) {
@@ -728,11 +729,10 @@ describe('Auth0AuthFlowRouter', () => {
             }
 
             for (let [text, error, statusCode] of [
-                ['UNAUTHORIZED when the identity service does not accept the user', new UnauthorizedIdentityError('Unauthorized'), HttpStatus.UNAUTHORIZED],
                 ['BAD_GATEWAY when the identity service errors', new IdentityError('Error'), HttpStatus.BAD_GATEWAY],
                 ['INTERNAL_SERVER_ERROR when there is another error', new Error('Bad error'), HttpStatus.INTERNAL_SERVER_ERROR]
             ]) {
-                it(`when the identity removal fails it should return ${text}`, async () => {
+                it(`when the identity removal fails it should return ${text} for ${env}`, async () => {
                     const appAgent = buildAppAgent(env, webFetcher as WebFetcher, identityClient as IdentityClient);
 
                     td.when(identityClient.withContext(theSessionTokenWithUser)).thenReturn(identityClient);

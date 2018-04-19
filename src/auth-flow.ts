@@ -38,7 +38,7 @@ export class PathMatch {
     path: string;
 
     @MarshalWith(r.StringMarshaller)
-    mode: 'prefix'|'full';
+    mode: 'prefix' | 'full';
 };
 
 
@@ -57,7 +57,7 @@ export function PostLoginRedirectInfoMarshaller(allowedPaths: PathMatch[]): r.Ma
         private readonly _objectMarshaller = new (MarshalFrom(PostLoginRedirectInfo))();
 
         build(a: string): PostLoginRedirectInfo {
-            let path: string|null;
+            let path: string | null;
             try {
                 // Don't ask. Auth0 seems to double encode this.
                 const redirectInfoSer = decodeURIComponent(decodeURIComponent(a));
@@ -66,16 +66,16 @@ export function PostLoginRedirectInfoMarshaller(allowedPaths: PathMatch[]): r.Ma
                 path = redirectInfo.path;
                 for (let allowedPath of localAllowedPaths) {
                     switch (allowedPath.mode) {
-                    case 'prefix':
-                        if (redirectInfo.path.indexOf(allowedPath.path) == 0) {
-                            return redirectInfo;
-                        }
-                        break;
-                    case 'full':
-                        if (redirectInfo.path == allowedPath.path) {
-                            return redirectInfo;
-                        }
-                        break;
+                        case 'prefix':
+                            if (redirectInfo.path.indexOf(allowedPath.path) == 0) {
+                                return redirectInfo;
+                            }
+                            break;
+                        case 'full':
+                            if (redirectInfo.path == allowedPath.path) {
+                                return redirectInfo;
+                            }
+                            break;
                     }
                 }
             } catch (e) {
