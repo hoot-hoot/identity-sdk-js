@@ -60,7 +60,7 @@ export function PostLoginRedirectInfoMarshaller(allowedPaths: PathMatch[]): r.Ma
             let path: string | null;
             try {
                 // Don't ask. Auth0 seems to double encode this.
-                const redirectInfoSer = decodeURIComponent(decodeURIComponent(a));
+                const redirectInfoSer = Buffer.from(a, 'base64').toString('ascii');
                 const redirectInfoRaw = JSON.parse(redirectInfoSer);
                 const redirectInfo = this._objectMarshaller.extract(redirectInfoRaw);
                 path = redirectInfo.path;
@@ -88,7 +88,7 @@ export function PostLoginRedirectInfoMarshaller(allowedPaths: PathMatch[]): r.Ma
         unbuild(redirectInfo: PostLoginRedirectInfo) {
             const redirectInfoRaw = this._objectMarshaller.pack(redirectInfo);
             const redirectInfoSer = serializeJavascript(redirectInfoRaw, { isJSON: true });
-            return encodeURIComponent(encodeURIComponent(redirectInfoSer));
+            return Buffer.from(redirectInfoSer).toString('base64');
         }
     }
 }

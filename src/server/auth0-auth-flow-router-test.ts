@@ -213,7 +213,7 @@ describe('Auth0AuthorizeRedirectInfo', () => {
         });
 
         function quickEncode(obj: any): string {
-            return encodeURIComponent(encodeURIComponent(serializeJavascript(obj)));
+            return Buffer.from(serializeJavascript(obj)).toString('base64');
         }
     });
 });

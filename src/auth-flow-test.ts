@@ -86,7 +86,7 @@ describe('PostLoginRedirectInfo', () => {
         });
 
         function quickEncode(obj: any): string {
-            return encodeURIComponent(encodeURIComponent(serializeJavascript(obj)));
+            return Buffer.from(serializeJavascript(obj)).toString('base64');
         }
     });
 });
