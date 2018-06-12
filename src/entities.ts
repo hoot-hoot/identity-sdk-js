@@ -85,6 +85,18 @@ export class User {
     @MarshalWith(r.StringMarshaller)
     name: string;
 
+    /** The first name of the user, obtained from the identity provider. */
+    @MarshalWith(r.StringMarshaller)
+    firstName: string;
+
+    /** The last name of the user, obtained from the identity provider. */
+    @MarshalWith(r.StringMarshaller)
+    lastName: string;
+
+    /** The email of the user, obtained from the identity provider. */
+    @MarshalWith(r.StringMarshaller)
+    emailAddress: string;
+
     /** An uri to the picture of the user, obtained from the identity provider. */
     @MarshalWith(r.WebUriMarshaller)
     pictureUri: string;
