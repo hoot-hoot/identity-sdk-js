@@ -86,12 +86,12 @@ export class User {
     name: string;
 
     /** The first name of the user, obtained from the identity provider. */
-    @MarshalWith(r.StringMarshaller)
-    firstName: string;
+    @MarshalWith(OptionalOf(r.StringMarshaller))
+    firstName: string | null;
 
     /** The last name of the user, obtained from the identity provider. */
-    @MarshalWith(r.StringMarshaller)
-    lastName: string;
+    @MarshalWith(OptionalOf(r.StringMarshaller))
+    lastName: string | null;
 
     /** The email of the user, obtained from the identity provider. */
     @MarshalWith(r.StringMarshaller)
